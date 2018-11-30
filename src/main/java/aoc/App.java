@@ -43,8 +43,20 @@ public class App {
         if(args.length != 0){
             day = Integer.parseInt(args[0]);
         }
+
+        int part = 1;
+        if(args.length > 1){
+            part = Integer.parseInt(args[1]);
+        }
+
         List<String> input = loadInput(day);
-        String result = days.get(day).exec(input);
+
+        String result;
+        if(part == 1) {
+            result = days.get(day).part1(input);
+        } else {
+            result = days.get(day).part2(input);
+        }
 
         System.out.println(result);
     }
