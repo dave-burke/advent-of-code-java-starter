@@ -3,12 +3,49 @@
  */
 package aoc;
 
+import aoc.day01.Day01;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
+
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
+
+    private static final Map<Integer, Day> days;
+
+    static {
+        days = new HashMap<>();
+        days.put(1, new Day01());
+    }
+
+    private static List<String> loadInput(int day){
+        String paddedDay = String.valueOf(day);
+        if(day < 10) {
+            paddedDay = "0" + day;
+        }
+        String fileName = "day" + paddedDay + ".txt";
+
+        try(BufferedReader r = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)))){
+            return r.lines().collect(toList());
+        } catch(IOException e){
+            throw new UncheckedIOException(e);
+        }
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        int day = 1;
+        if(args.length != 0){
+            day = Integer.parseInt(args[0]);
+        }
+        List<String> input = loadInput(day);
+        String result = days.get(day).exec(input);
+
+        System.out.println(result);
     }
 }
