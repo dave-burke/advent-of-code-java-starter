@@ -3,3 +3,15 @@
 
 # Ignore Gradle build output directory
 build
+
+# Intellij
+.idea
+out
+ 
+# eclipse
+/.apt_generated
+/.classpath
+/.factorypath
+/.project
+/.settings
+/bin
