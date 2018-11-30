@@ -22,6 +22,7 @@ The shell for day 1 is already there. These are the steps to add day 2, etc. For
 ### Part 1
 
 1. Create `aoc.day02.Day02.java implements Day`
+1. Add a line to the static initialization block in `App.java` to add your nwe `Day` implementation: `DAYS.put(2, new Day02())`
 1. Create `Day02Test.java` and use the sample input/output from adventofcode.com/2019/day/2 to write tests (they will initially fail).
 1. Implement `Day02.part1()` until the tests pass (Test Driven Development!). You can run `./gradlew --continuous check` to have the tests run every time you save your code.
 1. When the example input passes, get your solution from adventofcode.com/2019/day/2/input and save it as `src/main/resources/day02.txt`

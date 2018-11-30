@@ -17,11 +17,11 @@ import static java.util.stream.Collectors.toList;
 
 public class App {
 
-    private static final Map<Integer, Day> days;
+    private static final Map<Integer, Day> DAYS;
 
     static {
-        days = new HashMap<>();
-        days.put(1, new Day01());
+        DAYS = new HashMap<>();
+        DAYS.put(1, new Day01());
     }
 
     private static List<String> loadInput(int day){
@@ -53,9 +53,9 @@ public class App {
 
         String result;
         if(part == 1) {
-            result = days.get(day).part1(input);
+            result = DAYS.get(day).part1(input);
         } else {
-            result = days.get(day).part2(input);
+            result = DAYS.get(day).part2(input);
         }
 
         System.out.println(result);
