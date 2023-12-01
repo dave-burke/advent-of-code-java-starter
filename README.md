@@ -1,6 +1,6 @@
 # Advent of Code Java Starter project
 
-A project to get you started solving the [Advent of Code 2018](https://adventofcode.com/2018) challenge in Java.
+A project to get you started solving [Advent of Code](https://adventofcode.com/) challenge in Java.
 
 ## Architecture
 
