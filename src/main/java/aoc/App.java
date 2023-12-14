@@ -5,13 +5,11 @@ package aoc;
 
 import aoc.day01.Day01;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -27,9 +25,13 @@ public class App {
     private static List<String> loadInput(int day){
         String fileName = String.format("day%02d.txt", day);
 
-        try(BufferedReader r = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)))){
+        InputStream inputForDay = ClassLoader.getSystemResourceAsStream(fileName);
+        if (Objects.isNull(inputForDay)) {
+            throw new IllegalArgumentException("Can’t find data for day using filename: " + fileName + ". Did you forget to put the file in the resources directory?");
+        }
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(inputForDay))) {
             return r.lines().collect(toList());
-        } catch(IOException e){
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
