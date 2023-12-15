@@ -3,61 +3,53 @@
  */
 package aoc;
 
-import aoc.day01.Day01;
+import org.reflections.Reflections;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
+import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class App {
-
-    private static final Map<Integer, Day> DAYS;
-
-    static {
-        DAYS = new HashMap<>();
-        DAYS.put(1, new Day01());
-    }
-
-    private static List<String> loadInput(int day){
-        String paddedDay = String.valueOf(day);
-        if(day < 10) {
-            paddedDay = "0" + day;
-        }
-        String fileName = "day" + paddedDay + ".txt";
-
-        try(BufferedReader r = new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)))){
-            return r.lines().collect(toList());
-        } catch(IOException e){
-            throw new UncheckedIOException(e);
-        }
-    }
-
     public static void main(String[] args) {
-        int day = 1;
-        if(args.length != 0){
-            day = Integer.parseInt(args[0]);
+
+        Reflections reflections = new Reflections(Day.class.getPackageName());
+        Set<Day> daysToPrint = reflections.getSubTypesOf(Day.class).stream().map(initialiseInstance()).collect(toSet());
+        int specifiedPart = 1;
+        boolean dayWasSpecified = args.length != 0;
+        if (dayWasSpecified) {
+            int specifiedDay = Integer.parseInt(args[0]);
+            daysToPrint = daysToPrint.stream().filter(d -> d.dayNumber() == specifiedDay).collect(toSet());
+            if (args.length > 1) {
+                specifiedPart = Integer.parseInt(args[1]);
+            }
         }
 
-        int part = 1;
-        if(args.length > 1){
-            part = Integer.parseInt(args[1]);
+        for (Day currentDay : daysToPrint) {
+            if (dayWasSpecified) {
+                if (specifiedPart == 1) {
+                    currentDay.printPart1();
+                }
+                else {
+                    currentDay.printPart2();
+                }
+            }
+            else {
+                currentDay.printPart1();
+                currentDay.printPart2();
+            }
         }
+    }
 
-        List<String> input = loadInput(day);
-
-        String result;
-        if(part == 1) {
-            result = DAYS.get(day).part1(input);
-        } else {
-            result = DAYS.get(day).part2(input);
-        }
-
-        System.out.println(result);
+    private static Function<Class<? extends Day>, ? extends Day> initialiseInstance() {
+        return d -> {
+            try {
+                return d.getDeclaredConstructor().newInstance();
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                     IllegalAccessException e) {
+                throw new RuntimeException("Encountered an issue attempting to create an instance of the current day class for child class: " + d.getName(), e);
+            }
+        };
     }
 }
