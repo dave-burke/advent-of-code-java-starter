@@ -4,7 +4,15 @@ import aoc.Day;
 
 import java.util.List;
 
-public class Day01 implements Day {
+public class Day01 extends Day {
+
+    static {
+        currentDay = new Day01();
+    }
+
+    public Day01() {
+        super(1);
+    }
 
     @Override
     public String part1(List<String> input) {
