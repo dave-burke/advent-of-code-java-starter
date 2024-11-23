@@ -8,8 +8,8 @@ import aoc.day01.Day01;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.net.URL;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -17,11 +17,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -102,6 +103,11 @@ public class App {
 
     public static void main(String[] args) {
         int day = 1;
+
+        LocalDate today = LocalDate.now();
+        if(today.getMonth() == Month.DECEMBER) {
+            day = today.getDayOfMonth();
+        }
         if(args.length != 0){
             day = Integer.parseInt(args[0]);
         }
