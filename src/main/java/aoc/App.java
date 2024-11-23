@@ -28,12 +28,19 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class App {
 
-    private static final int year = LocalDate.now().getYear();
-
     private static final Map<Integer, Day> DAYS;
     static {
         DAYS = new HashMap<>();
         DAYS.put(1, new Day01());
+    }
+
+    private static int year() {
+        LocalDate today = LocalDate.now();
+        if(today.getMonth() == Month.DECEMBER) {
+            return today.getYear();
+        } else {
+            return today.getYear() - 1;
+        }
     }
 
     private static Optional<String> readClassPathFile(String fileName) {
@@ -64,7 +71,7 @@ public class App {
     }
 
     private static String downloadInput(int day, String cookie) {
-        String url = String.format("https://adventofcode.com/%d/day/%d/input", year, day);
+        String url = String.format("https://adventofcode.com/%d/day/%d/input", year(), day);
         URI uri;
         try {
             uri = new URI(url);
@@ -127,7 +134,7 @@ public class App {
             if(cookie.isPresent()) {
                 input = downloadInput(day, cookie.get());
             } else {
-                System.out.println("Cannot get input for year " + year + " and day " + day + "."
+                System.out.println("Cannot get input for year " + year() + " and day " + day + "."
                     + " Either put the input at 'src/main/resources/day[xx].txt"
                     + " or use your browser's network inspector to read the 'cookie' header from the request for"
                     + " input and store it in 'src/main/resources/session.txt' (this file will be ignored by Git).");

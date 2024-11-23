@@ -38,3 +38,7 @@ The shell for day 1 is already there. These are the steps to add day 2, etc. For
     - Notice the second argument to the script is the part number. It defaults to 1, so now you have to pass it as 2.
 1. Check your solution on adventofcode.com!
 
+## Working on previous years
+
+The `App.year()` method defaults to the current year during December, and the previous year otherwise. If you want to use this starter to work on another year, just update the `year()` method to return the year you want.
+
