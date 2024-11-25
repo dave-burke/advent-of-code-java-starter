@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.*;
 
 public class Day01Test {
 
@@ -19,7 +19,7 @@ public class Day01Test {
         String result = new Day01().part1(input);
 
         // Then
-        assertEquals(input.get(0), result);
+        assertThat(result).isEqualTo(input.get(0));
     }
 
     @Test
@@ -31,6 +31,6 @@ public class Day01Test {
         String result = new Day01().part2(input);
 
         // Then
-        assertEquals(input.get(0), result);
+        assertThat(result).isEqualTo(input.get(0));
     }
 }
