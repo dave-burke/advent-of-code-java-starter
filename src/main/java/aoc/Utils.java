@@ -13,6 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -132,6 +134,10 @@ public class Utils {
             }
         }
         return input;
+    }
+
+    public static List<String> splitLines(String input) {
+        return Arrays.asList(input.split(System.lineSeparator()));
     }
 
 }

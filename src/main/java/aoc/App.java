@@ -32,13 +32,12 @@ public class App {
         }
 
         String input = Utils.readInput(year, day);
-        List<String> lines = Arrays.asList(input.split(System.lineSeparator()));
 
         String result;
         if(part == 1) {
-            result = DAYS.get(day).part1(lines);
+            result = DAYS.get(day).part1(input);
         } else {
-            result = DAYS.get(day).part2(lines);
+            result = DAYS.get(day).part2(input);
         }
 
         System.out.println(result);
