@@ -3,26 +3,42 @@
  */
 package aoc;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Optional;
+
 public class App {
 
-    public static void main(String[] args) {
-        int year = Utils.defaultYear();
-        int day = Utils.defaultDay();
+    public static void main(String... args) {
+        int year = defaultYear();
+        int day = defaultDay();
 
-        if(args.length != 0){
+        if (args.length != 0) {
             day = intOrDie(args[0]);
         }
 
         int part = 1;
-        if(args.length > 1){
+        if (args.length > 1) {
             part = intOrDie(args[1]);
         }
 
-        String input = Utils.readInput(year, day);
-        Day dayInstance = Utils.getDayInstance(day);
+        String input = readInput(year, day);
+        Day dayInstance = getDayInstance(day);
 
         String result;
-        if(part == 1) {
+        if (part == 1) {
             result = dayInstance.part1(input);
         } else {
             result = dayInstance.part2(input);
@@ -31,13 +47,145 @@ public class App {
         System.out.println(result);
     }
 
+    public static void runPart1ForDay(int day) {
+        main(String.valueOf(day), "1");
+    }
+
+    public static void runPart2ForDay(int day) {
+        main(String.valueOf(day), "1");
+    }
+
+    private static int defaultDay() {
+        LocalDate today = LocalDate.now();
+        if (today.getMonth() == Month.DECEMBER) {
+            return today.getDayOfMonth();
+        } else {
+            return 1;
+        }
+
+    }
+
+    private static int defaultYear() {
+        LocalDate today = LocalDate.now();
+        if (today.getMonth() == Month.DECEMBER) {
+            return today.getYear();
+        } else {
+            return today.getYear() - 1;
+        }
+    }
+
+    private static Optional<String> readClassPathFile(String fileName) {
+        URL url = ClassLoader.getSystemResource(fileName);
+        if (url == null) {
+            System.out.println("No file " + fileName + " on the classpath.");
+            return Optional.empty();
+        }
+        Path path = Paths.get(url.getFile());
+        if (!Files.exists(path)) {
+            return Optional.empty();
+        }
+
+        try {
+            return Optional.of(Files.readString(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    private static String inputFileName(int day) {
+        String paddedDay = String.valueOf(day);
+        if (day < 10) {
+            paddedDay = "0" + day;
+        }
+        return "day" + paddedDay + ".txt";
+    }
+
+    private static String downloadInput(int day, String cookie) {
+        String url = String.format("https://adventofcode.com/%d/day/%d/input", defaultYear(), day);
+        System.out.println("Downloading " + url);
+
+        URI uri;
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("cookie", cookie.trim())
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpResponse<String> response;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (InterruptedException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Failed to read input from " + url
+                    + " using cookie " + cookie.substring(0, 5) + "***** ."
+                    + " Response was " + response.statusCode()
+                    + " " + response.body());
+        }
+
+        String input = response.body();
+        try {
+            Files.writeString(Paths.get("./src/main/resources/" + inputFileName(day)), input, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        return input;
+    }
+
+    private static String readInput(int year, int day) {
+        Optional<String> fileInput = readClassPathFile(inputFileName(day));
+
+        String input = null;
+        if (fileInput.isPresent()) {
+            input = fileInput.get();
+        } else {
+            Optional<String> cookie = readClassPathFile("session.txt");
+            if (cookie.isPresent()) {
+                input = downloadInput(day, cookie.get());
+            } else {
+                System.err.println("Cannot get input for year " + year + " and day " + day + "."
+                        + " Either put the input at 'src/main/resources/day[xx].txt"
+                        + " or use your browser's network inspector to read the 'cookie' header from the request for"
+                        + " input and store it in 'src/main/resources/session.txt' (this file will be ignored by Git).");
+                System.exit(1);
+            }
+        }
+        return input;
+    }
+
     private static int intOrDie(String numeric) {
         try {
             return Integer.valueOf(numeric);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.out.println("The argument '" + numeric + "' could not be interpreted as an integer number.");
             System.exit(1);
         }
         return -1;
+    }
+
+    private static Day getDayInstance(int day) {
+        String dayClassName = String.format("aoc.day%02d.Day%02d", day, day);
+        try {
+            Class<?> dayClass = Class.forName(dayClassName);
+            if (!Day.class.isAssignableFrom(dayClass)) {
+                throw new IllegalArgumentException(dayClassName + " does not implement aoc.Day");
+            }
+            return (Day) dayClass.getDeclaredConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to load " + dayClassName
+                    + " class. Did you remember to create it and implement the Day interface?");
+            System.exit(1);
+        }
+        return null;
     }
 }
