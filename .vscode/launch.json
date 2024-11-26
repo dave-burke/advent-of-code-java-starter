@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "aoc.App",
+            "projectName": "advent-of-code-advent-of-code-java-starter",
+            "args": [
+                "${input:args}"
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "args",
+            "type":"promptString",
+            "description": "Enter day or day and part (e.g. '1' or '1 2')",
+            "default": ""
+        }
+    ]
+}
