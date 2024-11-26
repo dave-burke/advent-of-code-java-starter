@@ -3,20 +3,7 @@
  */
 package aoc;
 
-import aoc.day01.Day01;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class App {
-
-    private static final Map<Integer, Day> DAYS;
-    static {
-        DAYS = new HashMap<>();
-        DAYS.put(1, new Day01());
-    }
 
     public static void main(String[] args) {
         int year = Utils.defaultYear();
@@ -32,12 +19,13 @@ public class App {
         }
 
         String input = Utils.readInput(year, day);
+        Day dayInstance = Utils.getDayInstance(day);
 
         String result;
         if(part == 1) {
-            result = DAYS.get(day).part1(input);
+            result = dayInstance.part1(input);
         } else {
-            result = DAYS.get(day).part2(input);
+            result = dayInstance.part2(input);
         }
 
         System.out.println(result);

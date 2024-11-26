@@ -126,7 +126,7 @@ public class Utils {
             if(cookie.isPresent()) {
                 input = downloadInput(day, cookie.get());
             } else {
-                System.out.println("Cannot get input for year " + year + " and day " + day + "."
+                System.err.println("Cannot get input for year " + year + " and day " + day + "."
                     + " Either put the input at 'src/main/resources/day[xx].txt"
                     + " or use your browser's network inspector to read the 'cookie' header from the request for"
                     + " input and store it in 'src/main/resources/session.txt' (this file will be ignored by Git).");
@@ -134,6 +134,22 @@ public class Utils {
             }
         }
         return input;
+    }
+
+    public static Day getDayInstance(int day) {
+        String dayClassName = String.format("aoc.day%02d.Day%02d", day, day);
+        try {
+            Class<?> dayClass = Class.forName(dayClassName);
+            if (!Day.class.isAssignableFrom(dayClass)) {
+                throw new IllegalArgumentException(dayClassName + " does not implement aoc.Day");
+            }
+            return (Day)dayClass.getDeclaredConstructor().newInstance();
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to load " + dayClassName + " class. Did you remember to create it and implement the Day interface?");
+            System.exit(1);
+        }
+        return null;
     }
 
     public static List<String> splitLines(String input) {
