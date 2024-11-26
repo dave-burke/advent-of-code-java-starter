@@ -21,6 +21,15 @@ import java.util.Optional;
 
 public class App {
 
+    /**
+     * This is the "entrypoint" for the application. That is, it is the first
+     * code that gets run for the project.
+     *
+     * @param args Java will pass the command line arguments as this parameter.
+     * The first argument should be the day to run (e.g. "1" or "12") and the
+     * second (optional) argument should be the part to run ("1" or "2"). The
+     * second argument defaults to "1".
+     */
     public static void main(String... args) {
         int year = defaultYear();
         int day = defaultDay();
@@ -47,14 +56,53 @@ public class App {
         System.out.println(result);
     }
 
+    /**
+     * This is just a helper method that can be used if you add a {@code main}
+     * method to your Day.
+     *
+     * For example, you could add this to Day01.java:
+     *
+     * <code><pre>
+     * public static void main(String[] args) {
+     *   App.runPart1ForDay(1);
+     * }
+     * </pre></code>
+     *
+     * @param day The day to run. Make sure it matches the Day you are calling
+     * it from!
+     *
+     */
     public static void runPart1ForDay(int day) {
         main(String.valueOf(day), "1");
     }
 
+    /**
+     * This is just a helper method that can be used if you add a {@code main}
+     * method to your Day.
+     *
+     * For example, you could add this to Day01.java:
+     *
+     * <code><pre>
+     * public static void main(String[] args) {
+     *   App.runPart2ForDay(1);
+     * }
+     * </pre></code>
+     *
+     * @param day The day to run. Make sure it matches the Day you are calling
+     * it from!
+     *
+     */
     public static void runPart2ForDay(int day) {
         main(String.valueOf(day), "1");
     }
 
+    /**
+     * If today is in the month of December, return which day of December it is. In other words, if today is December 3rd, this will return 3.
+     *
+     * If today is <i>not</i> in the month of December, this will return 1.
+     *
+     * @return The day of the month if today is in December, or 1 otherwise.
+     */
     private static int defaultDay() {
         LocalDate today = LocalDate.now();
         if (today.getMonth() == Month.DECEMBER) {
@@ -65,6 +113,18 @@ public class App {
 
     }
 
+    /**
+     * This will return the current year during December, or the prior year any
+     * other time.
+     *
+     * That way, if you are still working on the 2024 puzzles in January 2025,
+     * this will still return 2024.
+     *
+     * If you are working on puzzles older than a year, hard code the year
+     * instead of calling this method.
+     *
+     * @return The current year during December, or the prior year otherwise.
+     */
     private static int defaultYear() {
         LocalDate today = LocalDate.now();
         if (today.getMonth() == Month.DECEMBER) {
@@ -74,6 +134,15 @@ public class App {
         }
     }
 
+    /**
+     * Reads a file from the classpath (src/main/resources directory). If anything goes wrong (missing file,
+     * IOException) the result will be empty.
+     *
+     * @param fileName The name of the file. Should be something in src/main/resources
+     *
+     * @return An Optional containing the contents of the file as a String, or
+     * an empty Optional if the file could not be read for any reason.
+     */
     private static Optional<String> readClassPathFile(String fileName) {
         URL url = ClassLoader.getSystemResource(fileName);
         if (url == null) {
@@ -93,6 +162,18 @@ public class App {
         }
     }
 
+    /**
+     * <p>Determine the input file name for the current day. Format is "day##.txt" where ## is the zero-padded day number.</p>
+     *
+     * <p>Example:</p>
+     * <ul>
+     * <li>day01.txt</li>
+     * <li>day13.txt</li>
+     * </ul>
+     *
+     * @param day The day number (1-25)
+     * @return The name of the input file for the given day.
+     */
     private static String inputFileName(int day) {
         String paddedDay = String.valueOf(day);
         if (day < 10) {
@@ -101,8 +182,20 @@ public class App {
         return "day" + paddedDay + ".txt";
     }
 
-    private static String downloadInput(int day, String cookie) {
-        String url = String.format("https://adventofcode.com/%d/day/%d/input", defaultYear(), day);
+    /**
+     * This will download your personal input from adventofcode.com and store it
+     * in the file specified by {@link #inputFileName(int)}.
+     *
+     * @param year The year to use
+     * @param day The puzzle day to get input for
+     * @param cookie Your personal login cookie. Get it by inspecting the
+     * "cookie" header when you are logged into adventofcode.com. Do not share
+     * this value.
+     * @return The contents of the input that were written to a
+     * file.
+     */
+    private static String downloadInput(int year, int day, String cookie) {
+        String url = String.format("https://adventofcode.com/%d/day/%d/input", year, day);
         System.out.println("Downloading " + url);
 
         URI uri;
@@ -141,6 +234,19 @@ public class App {
         return input;
     }
 
+    /**
+     * Reads the input for the given year and day.
+     *
+     * If a file exists where specified by {@link #inputFileName(int)}, then that will be used.
+     *
+     * If no such file exists, but there is a 'session.txt' file on the
+     * classpath (in src/main/resources) then the input will be downloaded using
+     * the contents of session.txt as the cookie header.
+     *
+     * @param year the year to get input for
+     * @param day the day to get input for
+     * @return The input as a String.
+     */
     private static String readInput(int year, int day) {
         Optional<String> fileInput = readClassPathFile(inputFileName(day));
 
@@ -150,7 +256,7 @@ public class App {
         } else {
             Optional<String> cookie = readClassPathFile("session.txt");
             if (cookie.isPresent()) {
-                input = downloadInput(day, cookie.get());
+                input = downloadInput(year, day, cookie.get());
             } else {
                 System.err.println("Cannot get input for year " + year + " and day " + day + "."
                         + " Either put the input at 'src/main/resources/day[xx].txt"
@@ -162,6 +268,12 @@ public class App {
         return input;
     }
 
+    /**
+     * Parse the given String as an Integer or die trying (exit the JVM).
+     *
+     * @param numeric A String that better be numeric.
+     * @return The String as an int
+     */
     private static int intOrDie(String numeric) {
         try {
             return Integer.valueOf(numeric);
@@ -172,6 +284,16 @@ public class App {
         return -1;
     }
 
+    /**
+     * Uses "Reflection" (Java metaprogramming) to get an instance of the class for the given day.
+     *
+     * Specifically, if you pass "1" it will return an instance of {@code aoc.day01.Day01}.
+     *
+     * If there is no Day class for the given day, the JVM will exit.
+     *
+     * @param day The day number
+     * @return An instance of the Day implementation for the given day (e.g. Day01.class for day = 1)
+     */
     private static Day getDayInstance(int day) {
         String dayClassName = String.format("aoc.day%02d.Day%02d", day, day);
         try {

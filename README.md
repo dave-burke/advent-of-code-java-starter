@@ -21,8 +21,8 @@ The shell for day 1 is already there. These are the steps to add day 2, etc. For
 
 ### Part 1
 
-1. Create `aoc.day02.Day02.java implements Day`
-1. Create `Day02Test.java` and use the sample input/output from adventofcode.com to write tests (they will initially fail).
+1. Create `src/main/java/aoc/day02/Day02.java` and make sure it `implements Day`
+1. Create `src/main/test/aoc/day02/Day02Test.java` and use the sample input/output from adventofcode.com to write tests (they will initially fail). Use `Day01Test.java` as an example.
 1. Implement `Day02.part1()` until the tests pass (Test Driven Development!). You can run `./gradlew --continuous check` to have the tests run every time you save your code.
 1. When the example input passes, get your input from adventofcode.com and save it as `src/main/resources/day02.txt`
 1. Run `./gradlew run --args="2"` to get your output.
@@ -62,4 +62,3 @@ Call `runPart1ForDay` for part 2. **Make sure you specify the correct day number
 ## Working on previous years
 
 The `App` calls `defaultYear()` which defaults to the current year during December, and the previous year otherwise. If you want to use this starter to work on another year, just hard code the value of `year` in `App.main` to return the year you want.
-
