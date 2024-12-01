@@ -1,0 +1,4 @@
+{
+  "java.debug.settings.onBuildFailureProceed": false,
+  "java.configuration.updateBuildConfiguration": "automatic"
+}
