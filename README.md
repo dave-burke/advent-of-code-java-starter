@@ -19,6 +19,8 @@ The given `Day` class will process the input and return a result, which `App` wi
 
 The shell for day 1 is already there. These are the steps to add day 2, etc. For day 1 you can start by writing the test cases once the puzzle posts.
 
+If you are on a unix-like system, use `generate_day.sh --day <Day #>` to generate the boilerplate for a specified day.
+
 ### Part 1
 
 1. Create `src/main/java/aoc/day02/Day02.java` and make sure it `implements Day`
