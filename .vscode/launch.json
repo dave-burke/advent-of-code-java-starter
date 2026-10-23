@@ -4,22 +4,31 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
             "type": "java",
             "name": "App",
             "request": "launch",
+            "preLaunchTask": "java (build): Build Workspace",
             "mainClass": "aoc.App",
             "projectName": "advent-of-code-advent-of-code-java-starter",
             "args": [
-                "${input:args}"
+                "${input:arg1}",
+                "${input:arg2}"
             ]
         }
     ],
     "inputs": [
         {
-            "id": "args",
+            "id": "arg1",
             "type":"promptString",
-            "description": "Enter day or day and part (e.g. '1' or '1 2')",
+            "description": "Enter day (e.g. '13' or '21')",
+            "default": ""
+        },
+        {
+            "id": "arg2",
+            "type":"promptString",
+            "description": "Enter part (e.g. '1' or '2') [optional]",
             "default": ""
         }
     ]
